@@ -1,50 +1,38 @@
 const gameBoard = (function () {
-   function boardCell() {
-      let cellValue = 0;
-      const addValue = (newValue) => (cellValue = newValue);
-      const getValue = () => cellValue;
-      return { addValue, getValue };
-   }
-
-   // ---- ---- Board
-   const row = 3,
-      column = 3;
-   const board = [];
-
-   for (let i = 0; i < row; i++) {
-      board[i] = [];
-      for (let j = 0; j < column; j++) {
-         board[i].push(boardCell());
-      }
-   }
+   
+   const board = [0, 0, 0, 0, 0, 0, 0, 0, 0];
+   const getBoard = () => board;
+   const resetBoard = () => board.fill(0);
 
    function boardDisplay() {
-      board.forEach((row) => {
-         console.log(row.map((column) => column.getValue()));
+      let row = 1
+      board.forEach((__, index) => {
+         if ([2, 5, 8].includes(index)) {
+            console.log(`${row++}: ` + board[index - 2], board[index - 1], board[index]);
+         }
       });
    }
 
-   function setCell(rowIdx, colIdx, player) {
-      const targetCell =
-         board[rowIdx][colIdx].getValue() !== 0 ? false : board[rowIdx][colIdx];
-      if (targetCell) {
-         targetCell.addValue(player.value);
-      }
-   }
+ 
+   function setCell(index, player) {
+      console.log(index, player);
+      if (board[index] == 0) { 
+         board[index] = player.value
+       }
+   } 
 
-   return { setCell, boardDisplay };
+   return {getBoard, resetBoard, setCell, boardDisplay };
+
 })();
 
 function initializePlayer(player = "Jee", oponent = "AI") {
    return [
       {
          name: player,
-         symbol: "x",
          value: 1,
       },
       {
          name: oponent,
-         symbol: "o",
          value: 2,
       },
    ];
@@ -56,10 +44,16 @@ function gameplay() {
       if (player) console.log(`Turn: ${player.name}`);
    }
 
-   function setValue(row, column) {
+   function setValue(index) { 
       round(currentPlayer);
-      gameBoard.setCell(row, column, currentPlayer); // issue
-      gameBoard.boardDisplay();
+      gameBoard.setCell(index, currentPlayer); // issue
+      
+      if (determineWinner(currentPlayer)) {
+         console.log("Winner: " + currentPlayer.name);
+         gameBoard.resetBoard();
+         return
+      }
+
       currentPlayer = currentPlayer == players[1] ? players[0] : players[1];
    }
 
@@ -70,74 +64,34 @@ function gameplay() {
    return { setValue };
 }
 
-// let game = gameplay();
-// game.setValue(0, 1);
-// game.setValue(1, 1);
-// game.setValue(2, 1);
-// game.setValue(2, 0);
-// game.setValue(2, 1);
-// game.setValue(0, 2);
-
-function determineWinner() {
-   // Check every row, column, and the 2 diagonal
-
-   const winBoard = [
-      [1, 1, 2],
-      [1, 1, 1],
-      [2, 1, 2],
+function determineWinner(player) {
+   const combination = [
+      [0, 1, 2],
+      [3, 4, 5],
+      [6, 7, 8],
+      [0, 3, 6],
+      [1, 4, 7],
+      [2, 5, 8],
+      [0, 4, 8],
+      [2, 4, 6],
    ];
 
-   const rowL = winBoard.length;
-   const colL = winBoard[0].length;
-
-   function checkRow(gameBoard) {
-      let board = gameBoard || winBoard;
-
-      for (let i = 0; i < rowL; i++) {
-         let isValid = true;
-         for (let j = 0; j < colL; j++) {
-            if (board[i][j] == 0) {
-               isValid = false;
-               break;
-            }
-
-            if (j !== colL - 1 && board[i][j] != board[i][j + 1]) {
-               isValid = false;
-               break;
-            }
-         }
-
-         console.log(isValid);
-      }
+   gameBoard.boardDisplay();
+   
+   for (let i = 0; i < combination.length; i++) {
+      const pattern = gameBoard.getBoard().filter((v, index) => combination[i].includes(index))
+      var winner = pattern.every(value => value == player.value);
+      if (winner) { break }
    }
 
-   function checkColumn() {
-      // iterates trough column each row
-      let column = [];
-      for (let i = 0; i < rowL; i++) {
-         let row = [];
-         for (let j = 0; j < colL; j++) {
-            row.push(winBoard[j][i]);
-         }
-         column.push(row);
-      }
-
-      checkRow(column);
-   }
-
-   function checkDiagonal() {
-      let diagonal = [];
-      for (let i = 0; i < rowL; i++) {
-         let row = [];
-         row.push(winBoard[i][j]);
-      }
-   }
-
-   checkRow();
-   console.log("===");
-   checkColumn();
-   console.log("===");
-   checkDiagonal();
+   return winner;
 }
 
-determineWinner();
+let game = gameplay();
+game.setValue(0)
+game.setValue(1)
+game.setValue(3)
+game.setValue(5)
+game.setValue(6) // winning side
+
+game.setValue(1)
