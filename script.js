@@ -12,7 +12,6 @@ const gameBoard = (function () {
          }
       });
    }
-
  
    function setCell(index, player) {
       console.log(index, player);

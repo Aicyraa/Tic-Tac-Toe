@@ -1,12 +1,44 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-   <meta charset="UTF-8">
-   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <script type="module"src="script.js" defer></script>
-   <title>Document</title>
-</head>
-<body>
-   
-</body>
+   <head>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <script type="module" src="script.js" defer></script>
+      <link rel="stylesheet" href="style.css" />
+      <title>Document</title>
+   </head>
+   <body>
+      <div class="dashboard">
+         <div class="status">
+            <span id="turn">Turn</span>
+            <span>P1</span>
+         </div>
+         <div class="player" id="p1">
+            <span class="name">Jee</span>
+            <span class="score">2</span>
+         </div>
+         <div class="player" id="p2">
+            <span class="score">1</span>
+            <span class="name">AI</span>
+         </div>
+      </div>
+      <div class="main">
+            <div class="board">
+               <div class="cells cell0" index="0"></div>
+               <div class="cells cell1" index="1"></div>
+               <div class="cells cell2" index="2"></div>
+               <div class="cells cell3" index="3"></div>
+               <div class="cells cell4" index="4"></div>
+               <div class="cells cell5" index="5"></div>
+               <div class="cells cell6" index="6"></div>
+               <div class="cells cell7" index="7"></div>
+               <div class="cells cell8" index="8"></div>
+            </div>
+         <div class="buttons">
+            <button type="button" class="btns ">Start</button>
+            <button type="button" class="btns hidden">Restart</button>
+            <button type="button" class="btns hidden">Reset</button>
+         </div>
+      </div>
+   </body>
 </html>
