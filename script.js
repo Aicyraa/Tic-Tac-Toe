@@ -1,96 +1,64 @@
-const gameBoard = (function () {
-   
+const game = (function () {
    const board = [0, 0, 0, 0, 0, 0, 0, 0, 0];
    const getBoard = () => board;
-   const resetBoard = () => board.fill(0);
-
-   function boardDisplay() {
-      let row = 1
-      board.forEach((__, index) => {
-         if ([2, 5, 8].includes(index)) {
-            console.log(`${row++}: ` + board[index - 2], board[index - 1], board[index]);
-         }
-      });
-   }
- 
-   function setCell(index, player) {
-      console.log(index, player);
-      if (board[index] == 0) { 
-         board[index] = player.value
-       }
-   } 
-
-   return {getBoard, resetBoard, setCell, boardDisplay };
-
+   const checkSlot = (idx) => board[idx] == 0 ? true : false;
+   const setSlot = (idx, player) => {board[idx] = player.value}; 
+   const switchPlayer = (players, current) => current == players[0] ? players[1] : players[0];
+   return {getBoard, checkSlot, setSlot, switchPlayer};
 })();
 
-function initializePlayer(player = "Jee", oponent = "AI") {
+const e = {
+   slots: document.querySelectorAll(".cells"),
+   startBtn: document.querySelector("#start"),
+};
+
+let currentPlayer = null;
+let players = null;
+
+(function() {
+   e.startBtn.addEventListener("click", initializeGame);
+   // reset and rematch btns
+})();
+
+// 
+
+function initializeGame() {
+   players = initializePlayers();
+   currentPlayer = players[0];
+
+   e.slots.forEach(slot => slot.addEventListener("click", slotHandler()), {once: true})
+   // UI buttons logic below
+}
+
+function initializePlayers(player = "Jee", oponent = "AI") {
    return [
       {
          name: player,
-         value: 1,
+         value: 1
       },
       {
          name: oponent,
-         value: 2,
+         value: 2
       },
-   ];
+   ]
 }
 
-function gameplay() {
-   function round(player) {
-      console.log(`======== ${roundCount++} ========`);
-      if (player) console.log(`Turn: ${player.name}`);
-   }
+function slotHandler(){
+   return function (event){
+      const target = event.target;
+      const index = target.getAttribute("index");
 
-   function setValue(index) { 
-      round(currentPlayer);
-      gameBoard.setCell(index, currentPlayer); // issue
-      
-      if (determineWinner(currentPlayer)) {
-         console.log("Winner: " + currentPlayer.name);
-         gameBoard.resetBoard();
-         return
+      if (game.checkSlot(index)) {
+         game.setSlot(index, currentPlayer);
+         currentPlayer = game.switchPlayer(players, currentPlayer);
       }
 
-      currentPlayer = currentPlayer == players[1] ? players[0] : players[1];
+      console.log(game.getBoard()); // logger
    }
-
-   const players = initializePlayer();
-   let currentPlayer = players[0];
-   let roundCount = 1;
-
-   return { setValue };
 }
 
-function determineWinner(player) {
-   const combination = [
-      [0, 1, 2],
-      [3, 4, 5],
-      [6, 7, 8],
-      [0, 3, 6],
-      [1, 4, 7],
-      [2, 5, 8],
-      [0, 4, 8],
-      [2, 4, 6],
-   ];
+// clickable slot in the 3b3
+// put element in the clicked slot
+// sync it with the back end 
 
-   gameBoard.boardDisplay();
-   
-   for (let i = 0; i < combination.length; i++) {
-      const pattern = gameBoard.getBoard().filter((v, index) => combination[i].includes(index))
-      var winner = pattern.every(value => value == player.value);
-      if (winner) { break }
-   }
 
-   return winner;
-}
-
-let game = gameplay();
-game.setValue(0)
-game.setValue(1)
-game.setValue(3)
-game.setValue(5)
-game.setValue(6) // winning side
-
-game.setValue(1)
