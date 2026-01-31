@@ -14,11 +14,17 @@ const e = {
 
 let currentPlayer = null;
 let players = null;
+let nonEmptySlots = [];
+
 
 (function() {
    e.startBtn.addEventListener("click", initializeGame);
+   e.slots.forEach(slot => slot.addEventListener("mouseenter", e => e.target.classList.add(currentPlayer.value)))
+   e.slots.forEach(slot => slot.addEventListener("mouseleave", e => e.target.classList.remove(currentPlayer.value)))
    // reset and rematch btns
 })();
+
+
 
 // 
 
@@ -58,20 +64,18 @@ function slotHandler(){
       }
 
       if (currentPlayer === players[1]) {
-         const target = AIhandler();
-         target.classList.add(currentPlayer.value);
-         currentPlayer = game.switchPlayer(players, currentPlayer)
+         setTimeout(() => {
+            const target = AIhandler();
+            target.classList.add(currentPlayer.value);
+            currentPlayer = game.switchPlayer(players, currentPlayer)
+         }, 500)
       }
-
-
       console.log(game.getBoard()); // logger
    }
 }
 
 function AIhandler(){
 
-   let nonEmptySlots = [];
-   
    for(let i = 0; i < game.getBoard().length; i++) {
       var randomIdx = Math.floor(Math.random() * 9)
       if (nonEmptySlots.includes(randomIdx)) {continue}
@@ -83,6 +87,6 @@ function AIhandler(){
 }
 
 function determineWinner(){
-   
+
 }
 
