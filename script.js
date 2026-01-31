@@ -1,7 +1,7 @@
 const game = (function () {
-   const board = [0, 0, 0, 0, 0, 0, 0, 0, 0];
+   const board = ["", "", "", "", "", "", "", "", ""];
    const getBoard = () => board;
-   const checkSlot = (idx) => board[idx] == 0 ? true : false;
+   const checkSlot = (idx) => board[idx] == "" ? true : false;
    const setSlot = (idx, player) => {board[idx] = player.value}; 
    const switchPlayer = (players, current) => current == players[0] ? players[1] : players[0];
    return {getBoard, checkSlot, setSlot, switchPlayer};
@@ -34,31 +34,55 @@ function initializePlayers(player = "Jee", oponent = "AI") {
    return [
       {
          name: player,
-         value: 1
+         value: "x",
       },
       {
          name: oponent,
-         value: 2
+         value: "o",
       },
    ]
 }
 
 function slotHandler(){
+
+   // switch to player 2 
+
    return function (event){
       const target = event.target;
       const index = target.getAttribute("index");
-
-      if (game.checkSlot(index)) {
+      
+      if (game.checkSlot(index) && currentPlayer === players[0]) {
          game.setSlot(index, currentPlayer);
+         target.classList.add(currentPlayer.value);
          currentPlayer = game.switchPlayer(players, currentPlayer);
       }
+
+      if (currentPlayer === players[1]) {
+         const target = AIhandler();
+         target.classList.add(currentPlayer.value);
+         currentPlayer = game.switchPlayer(players, currentPlayer)
+      }
+
 
       console.log(game.getBoard()); // logger
    }
 }
 
-// clickable slot in the 3b3
-// put element in the clicked slot
-// sync it with the back end 
+function AIhandler(){
 
+   let nonEmptySlots = [];
+   
+   for(let i = 0; i < game.getBoard().length; i++) {
+      var randomIdx = Math.floor(Math.random() * 9)
+      if (nonEmptySlots.includes(randomIdx)) {continue}
+      else if (!game.checkSlot(randomIdx)) {continue}
+      else {game.setSlot(randomIdx, currentPlayer); break}
+   }
+
+   return document.querySelectorAll(".cells")[randomIdx]
+}
+
+function determineWinner(){
+   
+}
 

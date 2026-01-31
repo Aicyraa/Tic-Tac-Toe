@@ -258,3 +258,25 @@ html, body {
       0 2px 4px rgba(0, 0, 0, 0.1);
    transform: translateZ(0);
 }
+
+/* CEllS */
+
+.cells.x::before, .cells.o::before{
+   font-family:Verdana, Geneva, Tahoma, sans-serif !important;
+   position: absolute;
+   top: 50%;
+   left: 50%;
+   transform: translate(-50%, -50%);
+   font-size: 1.5em;
+}
+
+.cells.x::before {
+   content: 'X';
+   color: var(--color-accent-3);
+}
+
+.cells.o::before {
+   transform: translate(-50%, -50%);
+   content: 'O';
+   color: var(--color-hover-accent-1);
+}
