@@ -1,11 +1,12 @@
 const game = (function () {
-   let board = ['', '', '', '', '', '', '', '', ''];
+   let board = ["", "", "", "", "", "", "", "", ""];
 
    const getBoard = () => board;
    const setBoard = (newBoard) => (board = newBoard);
    const isSlotEmpty = (idx) => board[idx] === "";
    const setSlot = (idx, player) => (board[idx] = player.value);
-   const switchPlayer = (players, current) => current === players[0] ? players[1] : players[0];
+   const switchPlayer = (players, current) =>
+      current === players[0] ? players[1] : players[0];
 
    return { getBoard, setBoard, isSlotEmpty, setSlot, switchPlayer };
 })();
@@ -40,7 +41,7 @@ function initializeGame() {
    players = createPlayers();
    currentPlayer = players[0];
    elements.slots.forEach((slot) =>
-      slot.addEventListener("click", handleSlotClick)
+      slot.addEventListener("click", handleSlotClick),
    );
 }
 
@@ -57,20 +58,16 @@ function createPlayers(playerName = "Jee", opponentName = "AI") {
    return [createPlayer(playerName, "x"), createPlayer(opponentName, "o")];
 }
 
-function buttonHandler() {
-
-}
+function buttonHandler() {}
 
 // players funcs
 
 function handleSlotClick(event) {
-
    function makeMove(target, index) {
       game.setSlot(index, currentPlayer);
       target.classList.add(currentPlayer.value);
    }
-   debugger
-   
+
    const target = event.target;
    const index = target.getAttribute("index");
 
@@ -85,31 +82,24 @@ function handleSlotClick(event) {
    }
 }
 
-
 function playAITurn() {
-   if (currentPlayer !== players[1]) return;
-
    setTimeout(() => {
       const target = getAIMove();
       target.classList.add(currentPlayer.value);
+
       if (checkGameEnd(currentPlayer)) return;
       currentPlayer = game.switchPlayer(players, currentPlayer);
-      console.log(game.getBoard());
+
    }, 200);
 }
 
 function getAIMove() {
-   let randomIdx;
 
-   for (let i = 0; i < game.getBoard().length; i++) {
-      randomIdx = Math.floor(Math.random() * 9);
-
+   while (true) {
+      var randomIdx = Math.floor(Math.random() * 9);
       if (filledSlots.includes(randomIdx)) continue;
-      if (!game.isSlotEmpty(randomIdx)) {
-         filledSlots.push(randomIdx);
-         continue;
-      }
-
+      if (!game.isSlotEmpty(randomIdx)) { filledSlots.push(randomIdx); continue;}
+   
       game.setSlot(randomIdx, currentPlayer);
       break;
    }
@@ -125,31 +115,28 @@ function updateScore(player) {
    if (player == players[0]) {
       PlayerScore.textContent = ++player.score;
    } else {
-      AIScore.textContent = ++player.score; 
+      AIScore.textContent = ++player.score;
    }
-    
 }
 
-
-
 function checkGameEnd(player) {
-
    function getWinner(player) {
       const board = game.getBoard();
-   
+
       for (const pattern of WIN_PATTERNS) {
          const isWin = pattern.every((idx) => board[idx] === player.value);
          if (isWin) return true;
       }
-   
+
       return false;
    }
-   
+
    function isTie() {
+      // add another conditon pattern
       const emptySlots = game.getBoard().filter((v) => v === "");
       return emptySlots.length === 1;
    }
-   
+
    function resetBoard() {
       game.setBoard(["", "", "", "", "", "", "", "", ""]);
       elements.slots.forEach((slot) => slot.classList.remove("x", "o"));
@@ -158,27 +145,28 @@ function checkGameEnd(player) {
 
    const winner = getWinner(player);
 
+   console.log(game.getBoard());
    if (winner) {
       const winningPlayer = player;
       setTimeout(() => {
          alert(winningPlayer);
-         currentPlayer = players[0]
-         updateScore(player)
+         currentPlayer = players[0];
+         updateScore(player);
+         console.log("----------");
          resetBoard();
-      }, 300)
+      }, 300);
       return true;
    }
 
    if (isTie()) {
       setTimeout(() => {
          alert("Tie");
-         currentPlayer = players[0]
+         currentPlayer = players[0];
+         console.log("----------");
          resetBoard();
-      })
+      }, 300);
       return true;
    }
 
    return false;
 }
-
-
