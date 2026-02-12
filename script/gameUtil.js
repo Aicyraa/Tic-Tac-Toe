@@ -31,7 +31,6 @@ function resetBoard(game) {
    filledSlots = [];
 }
 
-
 function updateScore(player) {
    const AIScore = document.querySelectorAll(".score")[1];
    const PlayerScore = document.querySelectorAll(".score")[0];
