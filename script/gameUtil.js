@@ -1,4 +1,6 @@
 // Game funcs
+import { elements } from "./game.js";
+
 function checkWinner(player, board) {
    const WIN_PATTERNS = [
       [0, 1, 2],
@@ -25,10 +27,10 @@ function checkTie(board) {
    return emptySlots.length === 1;
 }
 
-function resetBoard(game) {
+function resetBoard(game, slots) {
    game.setBoard(["", "", "", "", "", "", "", "", ""]);
    elements.slots.forEach((slot) => slot.classList.remove("x", "o"));
-   filledSlots = [];
+   slots = [];
 }
 
 function updateScore(player) {

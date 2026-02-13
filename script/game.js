@@ -1,7 +1,7 @@
 import { createPlayers } from "./players.js";
 import { checkWinner, checkTie, resetBoard, updateScore } from "./gameUtil.js";
 
-const elements = {
+export const elements = {
    slots: document.querySelectorAll(".cells"),
    startBtn: document.querySelector("#start"),
 };
@@ -26,19 +26,18 @@ const game = (function () {
 
 
 function declareWinner(player) {
-   
    function newRound(msg, player) {
       return setTimeout(() => {
          alert(msg)
          updateScore(player)
-         resetBoard(game)
+         resetBoard(game, rd.filledSlots)
       }, 300)
    }
 
    const winner = checkWinner(player, game.getBoard())
    const isTie = checkTie(game.getBoard());
 
-   if (winner) {newRound(`Winner: ${player.name} | ${player.value}`)}
+   if (winner) {newRound(`Winner: ${player.name} | ${player.value}`, player)}
    else if (isTie) {newRound("Tie!")}
 
    // returns false if the current game status is not tie or has a winner
@@ -64,7 +63,9 @@ function handleSlotClick(event) {
    const index = target.getAttribute("index");
    // clicking
    if (!game.isSlotEmpty(index) || rd.currentPlayer !== rd.players[0]) { return }
-   else {game.setSlot(target, index); target.classList.add(rd.currentPlayer.value)}
+   
+   game.setSlot(index, rd.currentPlayer)
+   target.classList.add(rd.currentPlayer.value)
 
    if (declareWinner(rd.currentPlayer, game.getBoard())) { return }
    else { rd.currentPlayer = game.switchPlayer(rd.players, rd.currentPlayer); playAITurn();}
@@ -72,9 +73,12 @@ function handleSlotClick(event) {
 
 function playAITurn() {
    setTimeout(() => {
+      console.log(game.getBoard());
       const target = getAIMove();
-      target.classList.add(rd.currentPlayer.value);
 
+      // gui
+      target.classList.add(rd.currentPlayer.value);
+      
       if (declareWinner(rd.currentPlayer)) return;
       rd.currentPlayer = game.switchPlayer(rd.players, rd.currentPlayer);
 
@@ -83,12 +87,16 @@ function playAITurn() {
 
 function getAIMove() {
    while (true) {
-      debugger
       var randomIdx = Math.floor(Math.random() * 9);
-      console.log(rd.filledSlots);
-      if (rd.filledSlots.includes(randomIdx)) {continue}
-      else if (!game.isSlotEmpty(randomIdx)) {rd.filledSlots.push(randomIdx); continue}
-      else {game.setSlot(randomIdx, rd.currentPlayer);}
+      
+      if (rd.filledSlots.includes(randomIdx)) {
+         continue
+      } else if (!game.isSlotEmpty(randomIdx)) {
+         rd.filledSlots.push(randomIdx); 
+         continue
+      } else {
+         game.setSlot(randomIdx, rd.currentPlayer);
+      }
       
       break;
    }
