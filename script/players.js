@@ -1,4 +1,4 @@
-function createPlayers(playerName = "Jee", opponentName = "AI") {
+function createPlayers(playerName = "Human", opponentName = "AI") {
    const createPlayer = (name, value) => ({
       name,
       value,
