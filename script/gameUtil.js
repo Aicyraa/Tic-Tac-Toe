@@ -38,7 +38,7 @@ function updateScore(player) {
 
    if (player == null) {
       return;
-   } else if (player === "AI") {
+   } else if (player.name === "AI") {
       AIScore.textContent = ++player.score;
    } else {
       PlayerScore.textContent = ++player.score;
