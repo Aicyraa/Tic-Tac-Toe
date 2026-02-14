@@ -4,6 +4,14 @@ import { checkWinner, checkTie, resetBoard, updateScore } from "./gameUtil.js";
 const elements = {
    slots: document.querySelectorAll(".cells"),
    startBtn: document.querySelector("#start"),
+   restartBtn: document.querySelector("#restart"),
+   resetBtn: document.querySelector("#reset"),
+   p1Card: document.querySelector("#p1"),
+   p2Card: document.querySelector("#p2"),
+   turnLabel: document.querySelector("#turn-label"),
+   modal: document.querySelector("#result-modal"),
+   modalMessage: document.querySelector("#result-message"),
+   modalClose: document.querySelector("#modal-close"),
 };
 
 const rd = {
@@ -34,44 +42,82 @@ const game = (function () {
 function initializeGame() {
    rd.players = createPlayers();
    rd.currentPlayer = rd.players[0];
-   elements.slots.forEach((slot) =>
-      slot.addEventListener("click", handleSlotClick),
-   );
+   updateTurnUI();
+   elements.slots.forEach((slot) => {
+      slot.classList.remove("x", "o", "winning-cell");
+      slot.addEventListener("click", handleSlotClick);
+   });
+   elements.startBtn.classList.add("hidden");
+   elements.restartBtn.classList.remove("hidden");
+   elements.resetBtn.classList.remove("hidden");
+   
+   elements.modalClose.onclick = () => {
+      elements.modal.classList.remove("show");
+      resetBoard();
+      initializeGame();
+   };
+
+   elements.restartBtn.onclick = () => {
+      resetBoard();
+      initializeGame();
+   };
+
+   elements.resetBtn.onclick = () => {
+      location.reload(); // Simple way to reset everything for now
+   };
+}
+
+function updateTurnUI() {
+   elements.p1Card.classList.toggle("active", rd.currentPlayer === rd.players[0]);
+   elements.p2Card.classList.toggle("active", rd.currentPlayer === rd.players[1]);
+   elements.turnLabel.textContent = `${rd.currentPlayer.name}'s Turn`;
 }
 
 // players funcs
 
 function handleSlotClick(event) {
-   function setSlot(idx, player) {
-      const currentEl = elements.slots[idx];
-      game.setSlot(idx, player);
-      game.switchPlayer(rd.players, player);
-      currentEl.classList.add(player.value);
-
-      if (checkWinner(game.getBoard(), player.value)) {
-         alert("Winner: " + player.name);
-         updateScore(player);
-         resetBoard();
-      } else if (checkTie(game.getBoard())) {
-         alert("It's a tie!");
-         resetBoard();
-      }
-   }
-
    const target = event.target;
    const index = target.getAttribute("index");
 
-   if (!game.isSlotEmpty(index)) {
+   if (!game.isSlotEmpty(index) || rd.currentPlayer.name === "AI") return;
+
+   setMove(index, rd.currentPlayer);
+}
+
+function setMove(idx, player) {
+   const currentEl = elements.slots[idx];
+   game.setSlot(idx, player);
+   currentEl.classList.add(player.value);
+
+   const result = checkWinner(game.getBoard(), player.value);
+   if (result.isWin) {
+      highlightWinner(result.pattern);
+      showResult(`${player.name} Wins!`);
+      updateScore(player);
       return;
-   } else {
-      setSlot(index, rd.currentPlayer);
+   } else if (checkTie(game.getBoard())) {
+      showResult("It's a Tie!");
+      return;
    }
 
-   // AI's turn
-   if (getAvailSlots(game.getBoard()).length > 0) {
-      const AImove = getBestMove(game.getBoard());
-      setSlot(AImove, rd.currentPlayer);
+   game.switchPlayer(rd.players, player);
+   updateTurnUI();
+
+   if (rd.currentPlayer.name === "AI") {
+      setTimeout(() => {
+         const AImove = getBestMove(game.getBoard());
+         if (AImove !== undefined) setMove(AImove, rd.currentPlayer);
+      }, 600); // Slight delay for realistic feel
    }
+}
+
+function highlightWinner(pattern) {
+   pattern.forEach(idx => elements.slots[idx].classList.add("winning-cell"));
+}
+
+function showResult(message) {
+   elements.modalMessage.textContent = message;
+   setTimeout(() => elements.modal.classList.add("show"), 500);
 }
 
 // algorithm
@@ -90,35 +136,36 @@ function makeMove(board, index, isMaximizing) {
 }
 
 function evaluateBoard(board, depth) {
-   if (checkWinner(board, "o")) return 10 - depth;
-   else if (checkWinner(board, "x")) return depth - 10;
-   else return 0;
+   const winO = checkWinner(board, "o");
+   if (winO.isWin) return 100 - depth;
+   const winX = checkWinner(board, "x");
+   if (winX.isWin) return depth - 100;
+   return 0;
 }
 
 function minimax(board, depth, isMaximizing, alpha = -Infinity, beta = Infinity) {
    const score = evaluateBoard(board, depth);
-   if (score !== 0 || getAvailSlots(board).length === 0) return score;
-
-   depth++;
+   if (score !== 0) return score;
+   if (getAvailSlots(board).length === 0) return 0;
 
    if (isMaximizing) {
       let bestScore = -Infinity;
       for (const spot of getAvailSlots(board)) {
-         const newBoard = makeMove(board, spot, isMaximizing);
-         const currentScore = minimax(newBoard, depth, false, alpha, beta);
+         const newBoard = makeMove(board, spot, true);
+         const currentScore = minimax(newBoard, depth + 1, false, alpha, beta);
          bestScore = Math.max(bestScore, currentScore);
          alpha = Math.max(alpha, currentScore);
-         if (beta <= alpha) break; // Alpha-beta pruning
+         if (beta <= alpha) break;
       }
       return bestScore;
    } else {
       let bestScore = Infinity;
       for (const spot of getAvailSlots(board)) {
-         const newBoard = makeMove(board, spot, isMaximizing);
-         const currentScore = minimax(newBoard, depth, true, alpha, beta);
+         const newBoard = makeMove(board, spot, false);
+         const currentScore = minimax(newBoard, depth + 1, true, alpha, beta);
          bestScore = Math.min(bestScore, currentScore);
          beta = Math.min(beta, currentScore);
-         if (beta <= alpha) break; // Alpha-beta pruning
+         if (beta <= alpha) break;
       }
       return bestScore;
    }
