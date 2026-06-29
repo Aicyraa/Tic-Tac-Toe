@@ -2,72 +2,12 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <script type="module" src="script/game.js" defer></script>
-    <link rel="stylesheet" href="style.css" />
-    <title>Document</title>
+    <title>tic-tac-toe</title>
   </head>
   <body>
-    <div class="app-container">
-      <header>
-        <div class="status-badge" id="turn-display">
-          <span id="turn-label">Player's Turn</span>
-        </div>
-      </header>
-
-      <main class="game-area">
-        <div class="dashboard">
-          <div class="player-card" id="p1">
-            <div class="player-info">
-              <span class="player-mark">X</span>
-              <span class="name">Player</span>
-            </div>
-            <span class="score">0</span>
-          </div>
-          <div class="vs-divider">VS</div>
-          <div class="player-card" id="p2">
-            <span class="score">0</span>
-            <div class="player-info">
-              <span class="name">AI</span>
-              <span class="player-mark">O</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="board-container">
-          <div class="board">
-            <div class="cells cell0" index="0"></div>
-            <div class="cells cell1" index="1"></div>
-            <div class="cells cell2" index="2"></div>
-            <div class="cells cell3" index="3"></div>
-            <div class="cells cell4" index="4"></div>
-            <div class="cells cell5" index="5"></div>
-            <div class="cells cell6" index="6"></div>
-            <div class="cells cell7" index="7"></div>
-            <div class="cells cell8" index="8"></div>
-          </div>
-        </div>
-
-        <div class="controls">
-          <button type="button" class="btn-primary" id="start">
-            Start Game
-          </button>
-          <button type="button" class="btn-secondary hidden" id="restart">
-            Restart
-          </button>
-          <button type="button" class="btn-outline hidden" id="reset">
-            Reset Scores
-          </button>
-        </div>
-      </main>
-    </div>
-
-    <div id="result-modal" class="modal hidden">
-      <div class="modal-content">
-        <h2 id="result-message">Victory!</h2>
-        <div class="result-animation-container"></div>
-        <button id="modal-close" class="btn-primary">Play Again</button>
-      </div>
-    </div>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
