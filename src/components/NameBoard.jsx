@@ -7,22 +7,41 @@ function NameField({ config, setConfig }) {
       formState: { errors },
    } = useForm({
       defaultValues: {
-         username: '',
+         playerX: '',
+         playerO: '',
       },
    });
 
-   function submit(data) {
-      setConfig({ ...config, name: data.username });
+   function submit({ playerX, playerO }) {
+      setConfig({
+         ...config,
+         playerX: playerX,
+         playerO: playerO ? playerO : 'Bot',
+      });
    }
 
    return (
       <form onSubmit={handleSubmit(submit)}>
-         {errors.username && <p>{errors.username.message}</p>}
-         <input
-            {...register('username', {
-               required: 'Username is required',
-            })}
-         />
+         <div className='input-group'>
+            <label htmlFor='playerX'> Player X </label>
+            <input
+               {...register('playerX', {
+                  required: 'playerX is required',
+               })}
+            />
+            {errors.playerX && <p>{errors.playerX.message}</p>}
+         </div>
+         {config.mode != 'bot' && (
+            <div className='input-group'>
+               <label htmlFor='playerO'>Player O</label>
+               <input
+                  {...register('playerO', {
+                     required: 'playerO is required',
+                  })}
+               />
+            </div>
+         )}
+         {errors.playerO && <p>{errors.playerO.message}</p>}
          <button type='submit'>Submit</button>
       </form>
    );

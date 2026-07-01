@@ -15,14 +15,15 @@ function App() {
    const [config, setConfig] = useState({
       isPlaying: false,
       mode: null,
-      name: '',
+      playerX: '',
+      playerO: '',
    });
 
    if (!config.isPlaying) {
       return <Menu config={config} setConfig={setConfig} />;
    }
 
-   if (config.isPlaying && !config.name) {
+   if (config.isPlaying && !config.playerX) {
       return <NameField config={config} setConfig={setConfig} />;
    }
 

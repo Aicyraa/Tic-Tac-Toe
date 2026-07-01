@@ -1,4 +1,4 @@
-import '../../css/Arena.css'
+import '../../css/Arena.css';
 import { useState } from 'react';
 
 import Board from './Board';
@@ -13,8 +13,8 @@ function Arena({ config, setConfig }) {
 
    const [turn, setTurn] = useState(0);
    const [playersStatus, setPlayersStatys] = useState({
-      x: { name: config.name, score: 0 },
-      o: { name: 'bot', score: 0 },
+      x: { name: config.playerX, score: 0 },
+      o: { name: config.playerO, score: 0 },
    });
 
    return (
