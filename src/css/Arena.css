@@ -1,0 +1,53 @@
+.arena {
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   flex: 1;
+   height: 100%;
+}
+
+.arena-score {
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   gap: 4.5rem;
+   border: 1px dotted black;
+   padding: 1.2rem;
+   border-radius: 8px;
+   position: absolute;
+   top: 1rem;
+   right: 1rem;
+
+   .players {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 1rem;
+   }
+
+   .players > span:nth-child(1) {
+      font-style: italic;
+      letter-spacing: 2px;
+   }
+
+   .players > span:nth-child(2) {
+      font-size: 2.5rem;
+   }
+}
+
+.arena-board {
+   display: grid;
+   grid-template: repeat(3, 100px) / repeat(3, 100px);
+   gap: 0.5rem;
+
+   .cells {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border: 1px dotted black;
+      border-radius: 1rem;
+      font-size: 2.5rem;
+      font-weight: 500;
+   }
+}
