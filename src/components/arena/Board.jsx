@@ -1,17 +1,56 @@
-import React from 'react';
+import { useEffect, useState } from 'react';
+import { processBoard, updateScore } from '../../utils/gameUtils';
 
-function Board() {
+function Board({
+   gameStatus,
+   setGameStatus,
+   playersStatus,
+   setPlayersStatus,
+   mode,
+}) {
+   function handleCellClick(index) {
+      const currentPlayer = gameStatus.turn % 2 == 0 ? 'x' : 'o';
+
+      if (gameStatus.logicBoard[index]) {
+         return;
+      }
+
+      const updatedBoard = [...gameStatus.logicBoard];
+      updatedBoard[index] = currentPlayer;
+      const result = processBoard(updatedBoard, currentPlayer);
+
+      setGameStatus(prev => ({
+         ...prev,
+         logicBoard: updatedBoard,
+      }));
+
+      if (result == 1) {
+         updateScore(playersStatus, setPlayersStatus, currentPlayer);
+         setGameStatus(prev => ({ ...prev, isRunning: false }));
+         return;
+      } else if (result == 0) {
+         setGameStatus(prev => ({ ...prev, isRunning: false }));
+         return;
+      }
+
+      setGameStatus(prev => ({
+         ...prev,
+         turn: prev.turn + 1,
+      }));
+   }
+
    return (
       <div className='arena-board'>
-         <div className='cells cell-1'>1</div>
-         <div className='cells cell-2'>1</div>
-         <div className='cells cell-3'>1</div>
-         <div className='cells cell-4'>1</div>
-         <div className='cells cell-5'>1</div>
-         <div className='cells cell-6'>1</div>
-         <div className='cells cell-7'>1</div>
-         <div className='cells cell-8'>1</div>
-         <div className='cells cell-9'>1</div>
+         {gameStatus.logicBoard.map((value, index) => (
+            <button
+               key={index}
+               type='button'
+               className={`cells cell-${index + 1}`}
+               disabled={!gameStatus.isRunning}
+               onClick={() => handleCellClick(index)}>
+               {value}
+            </button>
+         ))}
       </div>
    );
 }

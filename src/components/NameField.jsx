@@ -13,11 +13,11 @@ function NameField({ config, setConfig }) {
    });
 
    function submit({ playerX, playerO }) {
-      setConfig({
-         ...config,
+      setConfig(prev => ({
+         ...prev,
          playerX: playerX,
          playerO: playerO ? playerO : 'Bot',
-      });
+      }));
    }
 
    return (

@@ -1,6 +1,6 @@
-import '../css/Menu.css'
+import '../css/Menu.css';
 
-function Menu({ config, setConfig }) {
+function Menu({ setConfig }) {
    return (
       <div className='menu'>
          <h2> Tic Tac Toe </h2>
@@ -8,14 +8,18 @@ function Menu({ config, setConfig }) {
             <button
                className='option option-1'
                onClick={() =>
-                  setConfig({ ...config, isPlaying: true, mode: 'bot' })
+                  setConfig(prev => ({ ...prev, isPlaying: true, mode: 'bot' }))
                }>
                Vs Bot
             </button>
             <button
                className='option option-2'
                onClick={() =>
-                  setConfig({ ...config, isPlaying: true, mode: 'human' })
+                  setConfig(prev => ({
+                     ...prev,
+                     isPlaying: true,
+                     mode: 'human',
+                  }))
                }>
                2 Players
             </button>
