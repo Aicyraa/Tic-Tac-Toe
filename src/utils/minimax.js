@@ -1,6 +1,3 @@
-export function minimax(board, depth, isMaximizingPlayer) {
-   return -1
-
+export default function minimax(board, depth, isMaximizingPlayer) {
+   return 5;
 }
-
-
